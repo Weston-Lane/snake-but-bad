@@ -27,6 +27,7 @@ int main()
 		
 		rlImGuiBegin();
 
+		DrawCircle(50,50,10,RED);
 
 		rlImGuiEnd();
 
