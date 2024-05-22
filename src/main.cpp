@@ -1,36 +1,88 @@
 
 #include "raylib.h"
 #include "raymath.h"
-
+#include "SnakeBody.h"
+#include "Snake.h"
+#include "food.h"
+#include "PlayerController.h"
 #include "imgui.h"
 #include "rlImGui.h"
 
 
+#define WIDTH 540
+#define HEIGHT 480
+#define DEBUG false
+bool checkEaten(Snake*, Food*, double*);
+void renderSnake(Snake*);
+
 int main()
 {
+	
 
-	int screenWidth = 1280;
-	int screenHeight = 800;
 
 	SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
-	InitWindow(screenWidth, screenHeight, "raylib-Extras [ImGui] example - Docking");
-	SetTargetFPS(144);
+	InitWindow(WIDTH, HEIGHT, "snake");
+	SetTargetFPS(60);
 	rlImGuiSetup(true);
 
+	double frameTime = 0;
+	int frameCounter = 0;
 
+	int moveSpeed = 200;//starting stats
+	Vector2 initV{ 0,0 };
+	Vector2 initPos{ WIDTH/2,HEIGHT/2 };
+
+	PlayerController controller(moveSpeed, initV);//creates player controller with initial stats
+
+	Snake snake(new SnakePart(initPos));//creating the head
+	Food food({ WIDTH / 2,HEIGHT / 3 });//creating food
 	// Main game loop
 	while (!WindowShouldClose())    
 	{
 		BeginDrawing();
 		ClearBackground(DARKGRAY);
-
-		
 		rlImGuiBegin();
 
-		DrawCircle(50,50,10,RED);
+		double DT=GetFrameTime();
+		
 
+
+		//player controller
+
+		controller.updateDT(DT);
+		controller.updatePlayerVelocity(DEBUG);
+		snake.setHeadPos(controller.velocity);//for testing
+		 
+		snake.updatePos(controller.velocity);
+
+
+		ImGui::Begin("position");//pos window
+		ImGui::Text("X: %f", snake.getHeadPos().x);
+		ImGui::Text("Y: %f", snake.getHeadPos().y);
+		ImGui::Text("Size: %d",snake.size);
+		ImGui::Text("Frame: %d", frameCounter);
+		ImGui::End();
+
+
+		if (checkEaten(&snake, &food, &frameTime))
+		{
+			
+		}										//checks if food eaten, randomizes a new food pos, and adds to size; 
+											  //also uses frameTime to see if long enough has passed since last food eaten to prevent mutiple collisions 
+				
+		
+
+
+		DrawRectangle(food.pos.x, food.pos.y, 10, 10, food.color);
+
+		
+		renderSnake(&snake);
+
+		frameTime += DT;
+		frameCounter++;
+		if (frameCounter % 100 == 0)
+			frameCounter = 0;
 		rlImGuiEnd();
-
 		EndDrawing();
 
 	}
@@ -42,3 +94,36 @@ int main()
 
 	return 0;
 }
+
+bool checkEaten(Snake* s, Food* food, double* frameTime)
+{
+	
+	if (s->getHeadPos().x > food->pos.x - 8 &&
+		s->getHeadPos().x < food->pos.x + 15 &&
+		s->getHeadPos().y < food->pos.y + 10 &&
+		s->getHeadPos().y > food->pos.y - 10)
+	{
+		if (*frameTime >= .5)
+		{
+			food->randomizePos();
+			s->addPart(&s->head);
+			*frameTime = 0;
+		}
+
+		return true;
+	}
+	else
+		return false;
+
+
+
+}
+
+void renderSnake(Snake* s)
+{
+	DrawCircle(s->getHeadPos().x, s->getHeadPos().y, 10, GREEN);
+
+	if (s->head->next != NULL)
+		for (SnakePart* t = s->head->next; t != NULL; t = t->next)
+			DrawCircle(t->pos.x, t->pos.y, 10, RED);
+	}
