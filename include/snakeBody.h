@@ -6,43 +6,43 @@
 
 
 
-typedef struct snakePart
+class SnakePart
 {
-	int xPos;
-	int yPos;
-	int size;
-	Vector2 velocity;
-	Vector2 Pos;
+	public:
+		Vector2 pos{ 0,0 };
+		Vector2 velocity{ 0,0 };
+		SnakePart* next=NULL;
+		SnakePart* prv=NULL;
+		Color color = RED;
 
-	struct snakePart *next;
-	struct snakePart* prv;
 
+		SnakePart(Vector2 p)
+		{
+			pos = p;
+			next = NULL;
+			prv = NULL;
+		}
+
+		bool equalPos(Vector2 p2)
+		{
+			if (pos.x >p2.x - 5 &&
+				pos.x < p2.x + 5 &&
+				pos.y < p2.y + 5 &&
+				pos.y > p2.y - 5)
+				return true;
+			return false;
+		}
 };
 
-int size=0;
+//snakePart *createPart(int x, int y, int s)
+//{
+//	snakePart *newPart=(snakePart*)malloc(sizeof(snakePart));
+//	newPart->xPos = x;
+//	newPart->yPos = y;
+//	newPart->size = s;
+//	newPart->next = NULL;
+//	newPart->prv = NULL;
+//	return newPart;
+//}
 
-snakePart *createPart(int x, int y, int s)
-{
-	snakePart *newPart=(snakePart*)malloc(sizeof(snakePart));
-	newPart->xPos = x;
-	newPart->yPos = y;
-	newPart->size = s;
-	newPart->next = NULL;
-	newPart->prv = NULL;
-	return newPart;
-}
-void addPart(snakePart** head,int x, int y, int s)
-{
-
-	snakePart* newPart = createPart(x, y, s);
-
-	snakePart* temp = *head;
-
-	while (temp->next != NULL)
-		temp = temp->next;
-	
-	temp->next = newPart;
-	newPart->prv = temp;
-	size++;
-}
 
