@@ -32,6 +32,15 @@ class SnakePart
 				return true;
 			return false;
 		}
+		bool equalBulletPos(Vector2 p2)
+		{
+			if (pos.x > p2.x - 8 &&
+				pos.x < p2.x + 8 &&
+				pos.y < p2.y + 12 &&
+				pos.y > p2.y - 12)
+				return true;
+			return false;
+		}
 };
 
 //snakePart *createPart(int x, int y, int s)

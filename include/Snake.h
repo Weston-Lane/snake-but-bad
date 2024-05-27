@@ -16,10 +16,10 @@ class Snake
 	}
 
 
-	Vector2 getHeadPos() { return head->pos; }
+	Vector2 const getHeadPos() { return head->pos; }
 
-	void addPart(SnakePart** head)
-	{
+	void addPart(SnakePart** head)//creates the linked list structure for storing the snake body parts data
+	{								
 		SnakePart* temp = *head;
 
 		while (temp->next != NULL)
@@ -53,7 +53,7 @@ class Snake
 					t->pos.y = t->prv->pos.y;
 				}//going left
 
-				if (vel.x > 0)//goin right
+				if (vel.x > 0)//going right
 				{
 					t->pos.x = t->prv->pos.x - 10;
 					t->pos.y = t->prv->pos.y;
@@ -79,15 +79,13 @@ class Snake
 
 	void fullState(Snake* s)
 	{
-		
-			DrawCircle(s->getHeadPos().x, s->getHeadPos().y, 10, GRAY);
+
+			DrawCircle(s->getHeadPos().x, s->getHeadPos().y, 10, GREEN);
 
 			if (s->head->next != NULL)
 				for (SnakePart* t = s->head->next; t != NULL; t = t->next)
-					DrawCircle(t->pos.x, t->pos.y, 10, GRAY);
+					DrawCircle(t->pos.x, t->pos.y, 10, GREEN);
 		
-
-	
 	}
 	void setHeadPos(Vector2 v)
 	{

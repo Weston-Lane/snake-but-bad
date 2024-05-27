@@ -68,7 +68,7 @@ public:
 	{
 		deltaTime = DT;
 	}
-	double getDT()
+	double const getDT()
 	{
 		return deltaTime;
 	}
