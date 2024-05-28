@@ -16,7 +16,7 @@
 bool checkEaten(Snake*, Food*, double*);
 void renderSnake(Snake*);
 void failState();
-bool checkCollision(Snake*,Bullet*);
+bool checkCollision(Snake* s, Bullet* b, std::vector<std::shared_ptr<otherBullet>>& bs);
 void createBullets(Snake&, std::vector<std::shared_ptr<otherBullet>>& , int& , int&,double& );
 void renderBullets(std::vector<std::shared_ptr<otherBullet>>& bullets);
 //TODO: get the bullets to spawn more incrementally
@@ -64,7 +64,7 @@ int main()
 		double DT=GetFrameTime();
 		
 			
-			if (!checkCollision(&snake,&follower)||DEBUG)//checks if there has been a collision if so, then go to failState
+			if (!checkCollision(&snake,&follower,bullets)||DEBUG)//checks if there has been a collision if so, then go to failState
 			{
 				//player controller
 
@@ -84,11 +84,11 @@ int main()
 					ImGui::Text("Y: %f", snake.getHeadPos().y);
 					ImGui::Text("Size: %d", snake.size);
 					ImGui::Text("Frame: %d", frameCounter);
-					ImGui::Text("X: %f", bullet.pos.x);
-					ImGui::Text("Y: %f", bullet.pos.y);
-					ImGui::Text("X: %f", bullet.vel.x);
-					ImGui::Text("Y: %f", bullet.vel.y);
-					if (checkCollision(&snake,&bullet))
+					ImGui::Text("fX: %f", follower.pos.x);
+					ImGui::Text("fY: %f", follower.pos.y);
+					ImGui::Text("fvX: %f", follower.vel.x);
+					ImGui::Text("fvY: %f", follower.vel.y);
+					if (checkCollision(&snake,&follower,bullets))
 						ImGui::Text("COLLISION!");
 					ImGui::End();
 				#endif
@@ -113,6 +113,7 @@ int main()
 
 
 				//create the bullets and render
+				if(frameCounter%10==0)
 				createBullets(snake, bullets, frameCounter, countOfBull, DT);//creates a new bullets every time size is even or just one bullet when size is odd
 				renderBullets(bullets);//renders the bullets and deletes them when off screen
 
@@ -175,7 +176,7 @@ void failState()
 	DrawText("Game Over", WIDTH / 4+30, HEIGHT / 3, 50, RED);
 }
 
-bool checkCollision(Snake* s,Bullet* b)
+bool checkCollision(Snake* s,Bullet* b, std::vector<std::shared_ptr<otherBullet>>& bs)
 {
 	for (SnakePart* t = s->head->next; t != NULL; t = t->next)
 		if(s->head->equalPos(t->pos))
@@ -183,6 +184,9 @@ bool checkCollision(Snake* s,Bullet* b)
 	if (s->head->equalBulletPos(b->pos))
 		return true;
 
+	for (auto& i : bs)
+		if (s->head->equalBulletPos(i->pos))
+			return true;
 
 	return false;
 
@@ -190,25 +194,20 @@ bool checkCollision(Snake* s,Bullet* b)
 
 void createBullets(Snake& snake, std::vector<std::shared_ptr<otherBullet>>& bullets, int& frameCounter, int& countOfBull, double& DT)
 {
-	if (HARD)//HARD macro is size%2==0 not sure why this makes so many spawn but its kinda fun
-	{
-		for (int i = 0; i < countOfBull; i++)
-		{
+
 			otherBullet* b = new otherBullet;
 			std::shared_ptr<otherBullet> bs(b);//shared ptr made this work, no clue why
 			bs->randomizeStart();
 			bs->speed = 150;
 			bs->speed *= DT;
 
-			bs->vel = Vector2Subtract(Vector2Scale(snake.getHeadPos(), 1.1), bs->pos);
+			bs->vel = Vector2Subtract(Vector2Scale(snake.getHeadPos(), 1.2), bs->pos);
 			bs->vel = Vector2Normalize(bs->vel);
 			bs->vel = Vector2Scale(bs->vel, bs->speed);
 			bullets.push_back(bs);
-		}
-		countOfBull++;
-		if (countOfBull > 1)
-			countOfBull = 0;
-	}
+		
+
+	
 }
 
 void renderBullets(std::vector<std::shared_ptr<otherBullet>>& bullets)
@@ -224,13 +223,15 @@ void renderBullets(std::vector<std::shared_ptr<otherBullet>>& bullets)
 
 			if (i->pos.x > WIDTH || i->pos.y > HEIGHT || i->pos.y < 0 || i->pos.x < 0)
 			{
-				//bullets.erase(std::remove(bullets.begin(), bullets.end(), i), bullets.end());
-				i.reset();
+
+				i.reset();//removes the ptr
+				bullets.erase(std::remove(bullets.begin(), bullets.end(), i), bullets.end());//removes from the vector
 
 			}
 		}
 
 	}
+	
 
 }
 

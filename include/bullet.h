@@ -14,7 +14,7 @@ public:
 	Vector2 pos2{0,0};
 	Vector2 pos3{0,0};
 
-	Vector2 attackPos{};
+	//Vector2 attackPos{};
 
 	int speed{200};
 

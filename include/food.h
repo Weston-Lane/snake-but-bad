@@ -9,7 +9,7 @@ class Food
 {
 public:
 	Vector2 pos{ 0,0 };
-	Color color = BLUE;
+	Color color = ORANGE;
 
 	Food(Vector2 p)
 	{

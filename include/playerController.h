@@ -37,6 +37,7 @@ public:
 				velocity.x = 0;
 				velocity.y = (moveSpeed * deltaTime);
 			}
+
 		}
 		else
 		{
@@ -60,6 +61,7 @@ public:
 				velocity.x = 0;
 				velocity.y = (moveSpeed * deltaTime);
 			}
+
 		}
 
 	}
