@@ -5,8 +5,9 @@
 #define WIDTH 700
 #define HEIGHT 540
 #define DEBUG false
-#define NUMPARTS 30//number of parts to immediately add in debug mode
-#define HARD snake.size%2==0
+#define DIFFICULTY 4
+#define NUMPARTS 0//number of parts to immediately add in debug mode
+
 
 
 void LOG()

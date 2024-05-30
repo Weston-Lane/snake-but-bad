@@ -12,7 +12,7 @@ class Snake
 	Snake(SnakePart* h)
 	{
 		head = h;
-	
+		size++;
 	}
 
 
