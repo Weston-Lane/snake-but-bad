@@ -36,16 +36,16 @@ public:
 		
 		int LeftOrRight = rand() % 2;//random number between 0 and 1
 			
-		//if (LeftOrRight == 1)
-		//{
-		//	pos.x = (minXRight + rand()) % (WIDTH - minXRight + 1);
-		//	pos.y = (minYBottom + rand()) % (HEIGHT - minYBottom + 1);				///this block shouldnt really do anything since the end is randmized anyway
-		//}																			//however it did seems to prevent them spawning on top of player
-		//else
-		//{
-		//	pos.x = (0+rand()) % (maxXLeft-0 + 1);
-		//	pos.y = (0+rand()) % (maxYTop-0 + 1);
-		//}
+		if (LeftOrRight == 1)
+		{
+			pos.x = (minXRight + rand()) % (WIDTH - minXRight + 1);
+			pos.y = (minYBottom + rand()) % (HEIGHT - minYBottom + 1);				///this block shouldnt really do anything since the end is randmized anyway
+		}																			//however it did seems to prevent them spawning on top of player
+		else
+		{
+			pos.x = (0+rand()) % (maxXLeft-0 + 1);
+			pos.y = (0+rand()) % (maxYTop-0 + 1);
+		}
 
 
 		pos.x = rand() % 500;
