@@ -28,8 +28,19 @@ int main()
 {
 	//SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
 	InitWindow(WIDTH, HEIGHT, "snake");
-	SetTargetFPS(60);
+	SetTargetFPS(40);
 	rlImGuiSetup(true);
+	InitAudioDevice();
+
+	Wave musicWav = LoadWave("assets/sounds/Linkin Park - In the End (Lyrics).wav");
+	Wave eatWav = LoadWave("assets/sounds/Cartoon Munch Sound Effect edited.wav");
+	Wave deathWav = LoadWave("assets/sounds/why sound effect.wav");
+	Sound death = LoadSoundFromWave(deathWav);
+	Sound music = LoadSoundFromWave(musicWav);
+	Sound eat = LoadSoundFromWave(eatWav);
+
+	PlaySound(music);
+	bool deathCheck = true;
 
 	double frameTime = 0;//frame variables
 	int frameCounter = 0;
@@ -43,13 +54,15 @@ int main()
 	PlayerController controller(moveSpeed, initV);//creates player controller with initial stats
 	
 	Background back(LoadTexture("assets/nature_5/1.png"));//loads in all texture
-	Background  mid(LoadTexture("assets/nature_5/2.png"));//RELATIVE PATHS DO WORK JUST HAVE TO FIGURE OUT HOW TO ADD ASSETS TO CMAKE PATH
-	Background  mid2(LoadTexture("assets/nature_5/3.png"));
-	Background  fore(LoadTexture("assets/nature_5/4.png"));
+	Background mid(LoadTexture("assets/nature_5/2.png"));//RELATIVE PATHS DO WORK JUST HAVE TO FIGURE OUT HOW TO ADD ASSETS TO CMAKE PATH
+	Background mid2(LoadTexture("assets/nature_5/3.png"));
+	Background fore(LoadTexture("assets/nature_5/4.png"));
 	back.speed = 20;
 	mid.speed = 40;
 	mid2.speed = 60;
 	fore.speed = 80;
+
+
 	
 
 	Snake snake(new SnakePart(initPos));//creating the head
@@ -103,11 +116,11 @@ int main()
 				DrawText(TextFormat("Time: %lf", GetTime()), WIDTH - 250, 20, 30, RED);
 				//player controller
 
-
-
 				controller.updateDT(DT);//updates DT for controller
 				controller.updatePlayerVelocity(DEBUG);//DEBUG is used to allow back and forth movement
 				snake.setHeadPos(controller.velocity);//set head pos according to velocity
+
+				
 				
 				//debug window
 				#if (DEBUG)
@@ -125,6 +138,7 @@ int main()
 					ImGui::Text("fY: %f", follower.pos.y);
 					ImGui::Text("fvX: %f", follower.vel.x);
 					ImGui::Text("fvY: %f", follower.vel.y);
+					ImGui::Text("DT: %f", DT);
 					if (checkCollision(&snake,&follower,bullets))
 						ImGui::Text("COLLISION!");
 					ImGui::End();
@@ -140,6 +154,7 @@ int main()
 					snake.fullState(&snake);				//if food was just eaten, renders the snake grey to let someone know they cannot eat yet;
 					snake.updatePos(controller.velocity);
 					flip = true;
+					PlaySound(eat);
 				}
 				else//if no food is eaten this frame then update and render normally
 				{
@@ -178,6 +193,7 @@ int main()
 			}
 			else
 			{
+
 				back.updateBackground(DT);
 				mid.updateBackground(DT);
 				mid2.updateBackground(DT);
@@ -190,6 +206,13 @@ int main()
 				renderBackground(&fore);
 
 				failState();//the failState previously mentioned
+				StopSound(music);
+				
+				if (deathCheck)
+				{
+					PlaySound(death);
+					deathCheck = false;
+				}
 
 
 				DrawText(TextFormat("Score: %d", snake.size-1), WIDTH/3, HEIGHT/2, 50, RED);//score board
@@ -237,6 +260,7 @@ bool checkEaten(Snake* s, Food* food, double* buffer)
 void failState()
 {
 	DrawText("Game Over", WIDTH / 4+30, HEIGHT / 3, 50, RED);
+	
 }
 
 bool checkCollision(Snake* s,Bullet* b, std::vector<std::shared_ptr<otherBullet>>& bs)

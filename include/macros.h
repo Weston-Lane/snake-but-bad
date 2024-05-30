@@ -4,7 +4,7 @@
 //DEBUG is used to turn on debuging tools and there are some other Macros that were useful
 #define WIDTH 700
 #define HEIGHT 540
-#define DEBUG false
+#define DEBUG 0
 #define DIFFICULTY 4
 #define NUMPARTS 0//number of parts to immediately add in debug mode
 

@@ -1,16 +1,24 @@
 cmake_minimum_required(VERSION "3.19.2")
-project("game")
+project(game)
 
 add_subdirectory("lib/raylib")
 
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
+# Create a directory to hold the assets
 
 
-add_executable("game" "${MY_SOURCES}")
+add_executable(game "${MY_SOURCES}")
 
-target_include_directories("game" PUBLIC "include")
+target_include_directories(game PUBLIC "include")
 
-target_link_libraries("game" PRIVATE raylib)
+target_link_libraries(game PRIVATE raylib)
+
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/assets")
+
+# Copy the assets folder to the build directory
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_SOURCE_DIR}/assets" "${CMAKE_CURRENT_BINARY_DIR}/assets")
 

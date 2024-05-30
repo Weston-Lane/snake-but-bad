@@ -6,6 +6,7 @@
 #include "macros.h"
 #include "snake.h"
 
+
 class Bullet
 {
 public:
@@ -19,7 +20,7 @@ public:
 
 	int speed{100};
 
-	int amount{};
+	double rotate{0};
 
 	Color color=PURPLE;
 
@@ -35,16 +36,16 @@ public:
 		
 		int LeftOrRight = rand() % 2;//random number between 0 and 1
 			
-		if (LeftOrRight == 1)
-		{
-			pos.x = (minXRight + rand()) % (WIDTH - minXRight + 1);
-			pos.y = (minYBottom + rand()) % (HEIGHT - minYBottom + 1);				///this block shouldnt really do anything since the end is randmized anyway
-		}																			//however it did seems to prevent them spawning on top of player
-		else
-		{
-			pos.x = (0+rand()) % (maxXLeft-0 + 1);
-			pos.y = (0+rand()) % (maxYTop-0 + 1);
-		}
+		//if (LeftOrRight == 1)
+		//{
+		//	pos.x = (minXRight + rand()) % (WIDTH - minXRight + 1);
+		//	pos.y = (minYBottom + rand()) % (HEIGHT - minYBottom + 1);				///this block shouldnt really do anything since the end is randmized anyway
+		//}																			//however it did seems to prevent them spawning on top of player
+		//else
+		//{
+		//	pos.x = (0+rand()) % (maxXLeft-0 + 1);
+		//	pos.y = (0+rand()) % (maxYTop-0 + 1);
+		//}
 
 
 		pos.x = rand() % 500;
@@ -73,6 +74,7 @@ public:
 	{	
 		pos2 = { pos.x - 8,pos.y + 12 };
 		pos3 = { pos.x + 8,pos.y + 12 };
+
 		DrawTriangle(pos,pos2, pos3, color);
 	}
 
