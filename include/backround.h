@@ -11,6 +11,10 @@ public:
 
 	int speed{};
 
+	Background()
+	{
+
+	}
 
 	Background(Texture2D tex)
 	{

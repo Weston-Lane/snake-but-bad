@@ -25,7 +25,7 @@ public:
 
 	void randomizePos()
 	{
-		srand(time(0));
+		//srand(time(0));
 		float x = rand()%500;
 		float y = rand()%440;
 		changePos({ x,y });
